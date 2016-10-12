@@ -191,6 +191,7 @@ void Histogram::clear(){
 
 
 void Histogram::_createHistogram( Controller* controller){
+    qDebug() << "================================== Histogram::_createHistogram";
     std::pair<int,int> frameBounds = _getFrameBounds();
     std::vector<double> percentiles(2);
     percentiles[0] = 0;
@@ -959,6 +960,7 @@ bool Histogram::isLinked( const QString& linkId ) const {
 
 
 void Histogram::_loadData( Controller* controller ){
+    qDebug() << "=================== Histogram::_loadData";
     if( ! controller) {
         return;
     }
@@ -1977,6 +1979,7 @@ void Histogram::updateColorMap(){
 
 
 void Histogram::_updateColorClips( double colorMinPercent, double colorMaxPercent ){
+    qDebug() << "===================== Histogram::_updateColorClips";
     if ( colorMinPercent < colorMaxPercent ){
         double normMin = colorMinPercent * 100;
         double normMax = colorMaxPercent * 100;

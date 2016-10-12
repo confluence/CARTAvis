@@ -62,6 +62,7 @@ DataSource::DataSource() :
 void DataSource::_copyData( int frameLow, int frameHigh, int spectralIndex,
         std::vector<int>& allIndices, std::vector<double>& allValues ){
     Carta::Lib::NdArray::RawViewInterface* rawData = _getRawData( frameLow, frameHigh, spectralIndex );
+    qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ _copyData called! frameLow:" << frameLow << "frameHigh" << frameHigh;
     if ( rawData != nullptr ){
         Carta::Lib::NdArray::TypedView<double> view( rawData, false );
 
@@ -85,6 +86,8 @@ void DataSource::_copyData( int frameLow, int frameHigh, int spectralIndex,
         }
         );
     }
+    qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ _copyData completed.";
+
 }
 
 
@@ -394,7 +397,9 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     if ( locationIndex < 0 ){
                         locationIndex = 0;
                     }
+                    qDebug() << "------- Looking for percentile" << percentiles[i] << "(location index" << locationIndex << ")";
                     std::nth_element( allValues.begin(), allValues.begin()+locationIndex, allValues.end() );
+                    qDebug() << "------- Finished looking";
                     intensities[i].second = allValues[locationIndex];
                     int divisor = 1;
                     std::vector<int> dims = m_image->dims();
@@ -846,8 +851,10 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     int quantileIndex = _getQuantileCacheIndex( mFrames );
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     Carta::Lib::NdArray::Double doubleView( view.get(), false );
+    qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
     std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
             doubleView, {minClipPercentile, maxClipPercentile });
+    qDebug() << "------------- done";
     bool clipsChanged = false;
     int clipSize = newClips.size();
     if ( clipSize >= 2 ){

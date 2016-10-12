@@ -323,6 +323,7 @@ QString Colormap::getImageUnits() const {
 
 std::vector<std::pair<int,double> > Colormap::_getIntensityForPercents( std::vector<double>& percents ) const {
 
+    qDebug() << "===================== Colormap::_getIntensityForPercents";
     std::vector<std::pair<int,double>> values;
     Controller* controller = _getControllerSelected();
     if ( controller != nullptr ){

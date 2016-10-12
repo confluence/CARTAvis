@@ -94,7 +94,9 @@ bool ImageHistogram<T>::compute( ){
 			//Calculate the histogram
 			casa::Array<T> values;
 			casa::Array<T> counts;
+			qDebug() << "+++++++++++++ starting to calculate histogram";
 			success = m_histogramMaker->getHistograms( values, counts );
+			qDebug() << "+++++++++++++ finished calculating histogram";
 			if ( success ){
 				//Store the data
 				m_xValues.resize( values.size());

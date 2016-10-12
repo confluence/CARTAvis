@@ -360,6 +360,21 @@ std::vector<std::pair<int,double> > Controller::getIntensity( const std::vector<
 }
 
 std::vector<std::pair<int,double> > Controller::getIntensity( int frameLow, int frameHigh, const std::vector<double>& percentiles ) const{
+    qDebug() << "+++ Controller::getIntensity called with frameLow = " << frameLow << ", frameHigh= " << frameHigh << ", percentiles = " << percentiles;
+    // QUICK HACK FOR LARGE FILES
+    if (frameLow == -1 && frameHigh == -1) {
+        // check size
+        std::vector<int> dims = getImageDimensions();
+        int total_size = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int>());
+        qDebug() << "+++ total_size of image = " << total_size << "; threshold for calculation is 1000000";
+        // override frames
+        if (total_size > 1000000) {
+            qWarning() << "NOPE! This image is too large to fetch intensities for all frames. Falling back to current frame only.";
+            return getIntensity(percentiles);
+        }
+        qDebug() << "+++ Will fetch intensities for all frames.";
+    }
+
     std::vector<std::pair<int,double> > intensities = m_stack->_getIntensity( frameLow, frameHigh, percentiles );
     return intensities;
 }
