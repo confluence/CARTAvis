@@ -9,7 +9,6 @@ SUBDIRS = \
     desktop \
     plugins \
     Tests \
-    testRegion \
     testCache
 
 isEmpty(NOSERVER) {
