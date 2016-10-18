@@ -316,11 +316,11 @@ QWT_ROOT = $$absolute_path("../../../ThirdParty/qwt")
 INCLUDEPATH += $$QWT_ROOT/include
 unix:macx {
 	QMAKE_LFLAGS += '-F$$QWT_ROOT/lib'
-	LIBS +=-L../CartaLib -lCartaLib -framework qwt
+	LIBS +=-L../CartaLib -lCartaLib -framework qwt -lleveldb
 }
 else {
 	QMAKE_LFLAGS += '-Wl,-rpath,\'$$QWT_ROOT/lib\''
-	LIBS +=-L../CartaLib -lCartaLib -L$$QWT_ROOT/lib -lqwt
+	LIBS +=-L../CartaLib -lCartaLib -L$$QWT_ROOT/lib -lqwt -lleveldb
 }
 
 DEPENDPATH += $$PROJECT_ROOT/CartaLib
