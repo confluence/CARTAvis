@@ -858,9 +858,14 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     QByteArray minClipVal;
     QByteArray maxClipVal;
     bool minClipInCache = m_diskCache.readEntry( minClipKey.toUtf8(), minClipVal );
-    bool minClipInCache = m_diskCache.readEntry( maxClipKey.toUtf8(), maxClipVal );
+    bool maxClipInCache = m_diskCache.readEntry( maxClipKey.toUtf8(), maxClipVal );
 
-    qDebug << "++++++++++++ DISK CACHE KEYS:" << minClipKey << maxClipKey;
+    qDebug() << "++++++++++++ DISK CACHE KEYS:" << minClipKey << maxClipKey;
+    qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << minClipInCache << maxClipInCache;
+
+    if (minClipInCache && maxClipInCache) {
+        qDebug() << "++++++++++++ DISK CACHE VALUES:" << minClipVal << maxClipVal;
+    }
     
     qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
     std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
