@@ -46,7 +46,7 @@ DiskCache::DiskCache(QString dbFilePath)
     leveldb::Status status = leveldb::DB::Open( options, dbFilePath.toStdString(), & db );
 
     if ( false == status.ok() ) {
-        qDebug() << "Unable to open/create database '" << dbFilePath.toStdString() << "'" << endl;
+        qDebug() << "Unable to open/create database '" << dbFilePath << "'" << endl;
         qDebug() << status.ToString().c_str() << endl;
         return;
     }
