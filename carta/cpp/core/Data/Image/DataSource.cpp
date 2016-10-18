@@ -853,10 +853,14 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     Carta::Lib::NdArray::Double doubleView( view.get(), false );
 
-    qDebug() << "++++++++++++++++++ my filename is" << m_fileName;
-    QString test_key = QString( "%1/%2/min" ).arg( m_fileName ).arg( quantileIndex );
-    QByteArray test_value;
-    qDebug() << "++++++++++++++++++ nothing in the cache yet; this should be false" << m_diskCache.readEntry( test_key.toUtf8(), test_value );
+    QString minClipKey = QString("%1/%2/%3").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile);
+    QString maxClipKey = QString("%1/%2/%3").arg(m_fileName).arg(quantileIndex).arg(maxClipPercentile);
+    QByteArray minClipVal;
+    QByteArray maxClipVal;
+    bool minClipInCache = m_diskCache.readEntry( minClipKey.toUtf8(), minClipVal );
+    bool minClipInCache = m_diskCache.readEntry( maxClipKey.toUtf8(), maxClipVal );
+
+    qDebug << "++++++++++++ DISK CACHE KEYS:" << minClipKey << maxClipKey;
     
     qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
     std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
