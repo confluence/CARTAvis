@@ -60,6 +60,7 @@ HEADERS += \
     Data/Image/Contour/GeneratorState.h \
     Data/Image/CoordinateSystems.h \
     Data/Image/DataSource.h \
+    Data/Image/DiskCache.h \
     Data/Image/Draw/DrawGroupSynchronizer.h \
     Data/Image/Draw/DrawImageViewsSynchronizer.h \
     Data/Image/Draw/DrawSynchronizer.h \
@@ -193,6 +194,7 @@ SOURCES += \
     Data/Image/Contour/GeneratorState.cpp \
     Data/Image/CoordinateSystems.cpp \
     Data/Image/DataSource.cpp \
+    Data/Image/DiskCache.cpp \
     Data/Image/Grid/AxisMapper.cpp \
     Data/Image/Grid/DataGrid.cpp \
     Data/Image/Grid/Fonts.cpp \
