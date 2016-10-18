@@ -856,7 +856,7 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     qDebug() << "++++++++++++++++++ my filename is" << m_fileName;
     QString test_key = QString( "%1/%2/min" ).arg( m_fileName ).arg( quantileIndex );
     QByteArray test_value;
-    qDebug() << "++++++++++++++++++ nothing in the cache yet; this should be false" << m_diskCache.readEntry( test_key, test_value );
+    qDebug() << "++++++++++++++++++ nothing in the cache yet; this should be false" << m_diskCache.readEntry( test_key.toUtf8(), test_value );
     
     qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
     std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
