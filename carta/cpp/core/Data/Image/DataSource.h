@@ -9,6 +9,7 @@
 #include "CartaLib/CartaLib.h"
 #include "CartaLib/AxisInfo.h"
 #include "LeastRecentlyUsedCache.h"
+#include "DiskCache.h"
 
 #include <memory>
 
@@ -490,6 +491,9 @@ private:
 
     ///Percentile/Intensity cache
     LeastRecentlyUsedCache m_cachedPercentiles;
+
+    /// Temporary hack: disk cache
+    DiskCache m_diskCache;
 
     /// the rendering service
     std::shared_ptr<Carta::Core::ImageRenderService::Service> m_renderService;

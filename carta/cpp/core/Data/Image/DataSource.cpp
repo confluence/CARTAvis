@@ -36,6 +36,7 @@ DataSource::DataSource() :
     m_image( nullptr ),
     m_permuteImage( nullptr),
     m_cachedPercentiles(100),
+    m_diskCache(QString("test_disk_cache.db")),
     m_axisIndexX( 0 ),
     m_axisIndexY( 1 ){
         m_cmapUseCaching = true;
@@ -851,6 +852,12 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     int quantileIndex = _getQuantileCacheIndex( mFrames );
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     Carta::Lib::NdArray::Double doubleView( view.get(), false );
+
+    qDebug() << "++++++++++++++++++ my filename is" << m_fileName;
+    QString test_key = QString( "%1/%2/min" ).arg( m_fileName ).arg( quantileIndex );
+    QByteArray test_value;
+    qDebug() << "++++++++++++++++++ nothing in the cache yet; this should be false" << m_diskCache.readEntry( test_key, test_value );
+    
     qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
     std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
             doubleView, {minClipPercentile, maxClipPercentile });
