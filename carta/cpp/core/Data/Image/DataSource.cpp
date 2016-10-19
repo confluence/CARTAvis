@@ -854,7 +854,7 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     std::vector<double> newClips;
 
-    std::tuple<int, int, int> clipsMemKey = {quantileIndex, int(1000 * minClipPercentile), int(1000 * maxClipPercentile)};
+    std::tuple<int, int, int> clipsMemKey = std::make_tuple(quantileIndex, int(1000 * minClipPercentile), int(1000 * maxClipPercentile));
 
     if (m_clipsCache.find(clipsMemKey) != m_clipsCache.end()) {
         qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE";
