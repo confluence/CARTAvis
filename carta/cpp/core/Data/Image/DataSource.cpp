@@ -857,7 +857,7 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::tuple<int, int, int> clipsMemKey = {quantileIndex, int(1000 * minClipPercentile), int(1000 * maxClipPercentile)};
 
     if (m_clipsCache.find(clipsMemKey) != m_clipsCache.end()) {
-        qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE USING KEY" << clipsMemKey;
+        qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE";
         newClips = m_clipsCache[clipsMemKey];
     } else {
         QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
