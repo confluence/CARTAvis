@@ -37,15 +37,13 @@ QByteArray id2qb( const std::pair<int, double> & id) {
 }
 
 std::pair<int, double> qb2id( const QByteArray & ba) {
-    std::pair<int, double> id;
     if( ba.size() != (sizeof(double) + sizeof(int))) {
         return id;
     }
     const char * cptr = ba.constData();
     int int_val( * ((const int *) (cptr)));
     double double_val( * ((const double *) (cptr + sizeof(int))));
-    id = std::make_pair(int_val, double_val);
-    return id;
+    return std::make_pair(int_val, double_val);
 }
 
 DiskCache::DiskCache(QString dbFilePath)
