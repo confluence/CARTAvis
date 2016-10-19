@@ -878,33 +878,33 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     std::vector<double> newClips;
 
-    std::tuple<int, int, int> clipsMemKey = std::make_tuple(quantileIndex, int(1000 * minClipPercentile), int(1000 * maxClipPercentile));
+    QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
+    qDebug() << "++++++++++++ CACHE CLIPS KEY:" << clipsKey;
 
-    if (m_clipsCache.find(clipsMemKey) != m_clipsCache.end()) {
-        qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE";
-        newClips = m_clipsCache[clipsMemKey];
+    if (m_clipsCache.contains(clipsKey)) {
+        newClips = m_clipsCache[clipsKey];
+        qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE:" << newClips[0] << "," << newClips[1];
     } else {
-        QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
         QByteArray clipsVal;
         bool clipsInCache = m_diskCache.readEntry( clipsKey.toUtf8(), clipsVal );
 
-        qDebug() << "++++++++++++ DISK CACHE KEY" << clipsKey;
         qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
 
         if (clipsInCache) {
             newClips = qb2vd(clipsVal);
-            qDebug() << "++++++++++++ DISK CACHE VALUES:" << newClips;
+            qDebug() << "++++++++++++ FOUND CLIPS IN IN-DISK CACHE:" << newClips[0] << "," << newClips[1];
         } else {
             Carta::Lib::NdArray::Double doubleView( view.get(), false );
             qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
             newClips = Carta::Core::Algorithms::quantiles2pixels(
                     doubleView, {minClipPercentile, maxClipPercentile });
             qDebug() << "------------- done";
+            qDebug() << "++++++++++++ CALCULATED CLIPS:" << newClips[0] << "," << newClips[1];
             qDebug() << "++++++++++++ PUTTING CLIPS IN DISK CACHE";
             m_diskCache.setEntry( clipsKey.toUtf8(), vd2qb(newClips), 0);
         }
         qDebug() << "++++++++++++ PUTTING CLIPS IN MEMORY CACHE";
-        m_clipsCache[clipsMemKey] = newClips;
+        m_clipsCache[clipsKey] = newClips;
     }
     
     bool clipsChanged = false;
