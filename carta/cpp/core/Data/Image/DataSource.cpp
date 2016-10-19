@@ -851,7 +851,6 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::vector<int> mFrames = _fitFramesToImage( frames );
     int quantileIndex = _getQuantileCacheIndex( mFrames );
     std::vector<double> clips = m_quantileCache[ quantileIndex];
-    Carta::Lib::NdArray::Double doubleView( view.get(), false );
 
     QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
     QByteArray clipsVal;
@@ -866,6 +865,7 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
         newClips = qb2vd(clipsVal);
         qDebug() << "++++++++++++ DISK CACHE VALUES:" << newClips;
     } else {
+        Carta::Lib::NdArray::Double doubleView( view.get(), false );
         qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
         newClips = Carta::Core::Algorithms::quantiles2pixels(
                 doubleView, {minClipPercentile, maxClipPercentile });
