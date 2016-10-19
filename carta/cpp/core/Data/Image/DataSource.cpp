@@ -380,12 +380,25 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
         if ( val.first>= 0 ){
             intensities[i] = val;
             foundCount++;
+        } else {
+            // look in the disk cache
+            // key: low/high/percentile
+            // value: location, intensity
+            QString intensityKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(frameLow).arg(frameHigh).arg(percentiles[i]);
+            QByteArray intensityVal;
+            bool intensityInCache = m_diskCache.readEntry( intensityKey.toUtf8(), intensityVal );
+
+            qDebug() << "++++++++++++ DISK CACHE KEY" << intensityKey;
+            qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << intensityInCache;
+            // add to memory cache
+            if (intensityInCache) {
+                // fill this in after checking that the round trip works below
+            }
         }
     }
 
     //Not all percentiles were in the cache.  We are going to have to look some up.
     if ( foundCount < percentileCount ){
-
         std::vector < int > allIndices;
         std::vector < double > allValues;
         int spectralIndex = Util::getAxisIndex( m_image, AxisInfo::KnownType::SPECTRAL );
@@ -411,6 +424,12 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     intensities[i].first = specIndex;
                     //Store the found intensity in the cache.
                     m_cachedPercentiles.put( frameLow, frameHigh, intensities[i].first, percentiles[i], intensities[i].second );
+                    // also add to disk cache
+                    //QString intensityKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(frameLow).arg(frameHigh).arg(percentiles[i]);
+                    QByteArray test_serialised = id2qb(intensities[i]);
+                    std::pair<int, double> test_deserialised = qb2id(test_serialised);
+                    qDebug() << "++++++++++++++++++ SERIALISATION SANITY CHECK: BEFORE" << intensities[i].first << intensities[i].second;
+                    qDebug() << "++++++++++++++++++++++++++++++++++++++++++++++ AFTER " << test_deserialised.first << test_deserialised.second;
                 }
             }
         }

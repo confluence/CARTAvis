@@ -13,6 +13,8 @@ namespace Data {
 
 QByteArray vd2qb( const std::vector<double> & vd);
 std::vector<double> qb2vd( const QByteArray & ba);
+QByteArray id2qb( const std::pair<int, double> & id);
+std::pair<int, double> qb2id( const QByteArray & ba);
 
 class DiskCache : public Carta::Lib::IPCache
 {

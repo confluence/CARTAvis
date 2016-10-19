@@ -29,6 +29,25 @@ std::vector<double> qb2vd( const QByteArray & ba) {
     return vd;
 }
 
+QByteArray id2qb( const std::pair<int, double> & id) {
+    QByteArray ba;
+    ba.append( (const char *)( & id[0]), sizeof( int));
+    ba.append( (const char *)( & id[1]), sizeof( double));
+    return ba;
+}
+
+std::pair<int, double> qb2id( const QByteArray & ba) {
+    std::tuple<int, double> id;
+    if( ba.size() != (sizeof(double) + sizeof(int))) {
+        return id;
+    }
+    const char * cptr = ba.constData();
+    int int_val( * ((const int *) (cptr)))
+    double double_val( * ((const double *) (cptr + sizeof(int))))
+    id = std::make_pair(int_val, double_val);
+    return id;
+}
+
 DiskCache::DiskCache(QString dbFilePath)
 {
     p_readOptions = leveldb::ReadOptions();
