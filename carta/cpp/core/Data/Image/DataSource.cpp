@@ -860,12 +860,14 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     qDebug() << "++++++++++++ DISK CACHE KEYS" << clipsKey;
     qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
 
+    std::vector<double> newClips;
+
     if (clipsInCache) {
         qDebug() << "++++++++++++ DISK CACHE VALUES:" << clipsVal;
-        std::vector<double> newClips = qb2vd(clipsVal);
+        newClips = qb2vd(clipsVal);
     } else {
         qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
-        std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
+        newClips = Carta::Core::Algorithms::quantiles2pixels(
                 doubleView, {minClipPercentile, maxClipPercentile });
         qDebug() << "------------- done";
         qDebug() << "++++++++++++ PUTTING CLIPS IN CACHE";
