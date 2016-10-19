@@ -37,7 +37,7 @@ QByteArray id2qb( const std::pair<int, double> & id) {
 }
 
 std::pair<int, double> qb2id( const QByteArray & ba) {
-    std::tuple<int, double> id;
+    std::pair<int, double> id;
     if( ba.size() != (sizeof(double) + sizeof(int))) {
         return id;
     }
