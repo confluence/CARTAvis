@@ -876,9 +876,11 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
             newClips = Carta::Core::Algorithms::quantiles2pixels(
                     doubleView, {minClipPercentile, maxClipPercentile });
             qDebug() << "------------- done";
-            qDebug() << "++++++++++++ PUTTING CLIPS IN CACHE";
+            qDebug() << "++++++++++++ PUTTING CLIPS IN DISK CACHE";
             m_diskCache.setEntry( clipsKey.toUtf8(), vd2qb(newClips), 0);
         }
+        qDebug() << "++++++++++++ PUTTING CLIPS IN MEMORY CACHE";
+        m_clipsCache[clipsMemKey] = newClips;
     }
     
     bool clipsChanged = false;
