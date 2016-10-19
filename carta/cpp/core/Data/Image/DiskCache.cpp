@@ -31,8 +31,8 @@ std::vector<double> qb2vd( const QByteArray & ba) {
 
 QByteArray id2qb( const std::pair<int, double> & id) {
     QByteArray ba;
-    ba.append( (const char *)( & id[0]), sizeof( int));
-    ba.append( (const char *)( & id[1]), sizeof( double));
+    ba.append( (const char *)( & id.first), sizeof( int));
+    ba.append( (const char *)( & id.second), sizeof( double));
     return ba;
 }
 
