@@ -853,24 +853,25 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
     std::vector<double> clips = m_quantileCache[ quantileIndex];
     Carta::Lib::NdArray::Double doubleView( view.get(), false );
 
-    QString minClipKey = QString("%1/%2/%3").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile);
-    QString maxClipKey = QString("%1/%2/%3").arg(m_fileName).arg(quantileIndex).arg(maxClipPercentile);
-    QByteArray minClipVal;
-    QByteArray maxClipVal;
-    bool minClipInCache = m_diskCache.readEntry( minClipKey.toUtf8(), minClipVal );
-    bool maxClipInCache = m_diskCache.readEntry( maxClipKey.toUtf8(), maxClipVal );
+    QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
+    QByteArray clipsVal;
+    bool clipsInCache = m_diskCache.readEntry( clipsKey.toUtf8(), clipsVal );
 
-    qDebug() << "++++++++++++ DISK CACHE KEYS:" << minClipKey << maxClipKey;
-    qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << minClipInCache << maxClipInCache;
+    qDebug() << "++++++++++++ DISK CACHE KEYS" << clipsKey;
+    qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
 
-    if (minClipInCache && maxClipInCache) {
-        qDebug() << "++++++++++++ DISK CACHE VALUES:" << minClipVal << maxClipVal;
+    if (clipsInCache) {
+        qDebug() << "++++++++++++ DISK CACHE VALUES:" << clipsVal;
+        std::vector<double> newClips = qb2vd(clipsVal);
+    } else {
+        qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
+        std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
+                doubleView, {minClipPercentile, maxClipPercentile });
+        qDebug() << "------------- done";
+        qDebug() << "++++++++++++ PUTTING CLIPS IN CACHE";
+        m_diskCache.setEntry( clipsKey.toUtf8(), vd2qb(newClips), 0);
     }
     
-    qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
-    std::vector<double> newClips = Carta::Core::Algorithms::quantiles2pixels(
-            doubleView, {minClipPercentile, maxClipPercentile });
-    qDebug() << "------------- done";
     bool clipsChanged = false;
     int clipSize = newClips.size();
     if ( clipSize >= 2 ){
