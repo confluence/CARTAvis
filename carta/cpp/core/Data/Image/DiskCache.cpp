@@ -20,7 +20,7 @@ QByteArray vd2qb( const std::vector<double> & vd) {
 std::vector<double> qb2vd( const QByteArray & ba) {
     std::vector<double> vd;
     if( ba.size() % sizeof(double) != 0) {
-        return vd;
+        throw std::runtime_error("Could not unpack QByteArray into d::vector<double>: size is incorrect.");
     }
     const char * cptr = ba.constData();
     for( int i = 0 ; i < ba.size() ; i += sizeof(double)) {
@@ -38,7 +38,7 @@ QByteArray id2qb( const std::pair<int, double> & id) {
 
 std::pair<int, double> qb2id( const QByteArray & ba) {
     if( ba.size() != (sizeof(double) + sizeof(int))) {
-        return id;
+        throw std::runtime_error("Could not unpack QByteArray into std::pair<int, double>: size is incorrect.");
     }
     const char * cptr = ba.constData();
     int int_val( * ((const int *) (cptr)));
