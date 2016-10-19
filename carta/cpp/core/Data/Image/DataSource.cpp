@@ -390,9 +390,15 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
 
             qDebug() << "++++++++++++ DISK CACHE KEY" << intensityKey;
             qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << intensityInCache;
-            // add to memory cache
+
             if (intensityInCache) {
-                // fill this in after checking that the round trip works below
+                // add and mark as found
+                qDebug() << "++++++ GETTING INTENSITY FROM DISK CACHE";
+                intensities[i] = qb2id(intensityVal);
+                foundCount++;
+                // also add to memory cache
+                qDebug() << "++++++ AND ADDING TO MEMORY CACHE";
+                m_cachedPercentiles.put( frameLow, frameHigh, intensities[i].first, percentiles[i], intensities[i].second );
             }
         }
     }
@@ -425,11 +431,9 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     //Store the found intensity in the cache.
                     m_cachedPercentiles.put( frameLow, frameHigh, intensities[i].first, percentiles[i], intensities[i].second );
                     // also add to disk cache
-                    //QString intensityKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(frameLow).arg(frameHigh).arg(percentiles[i]);
-                    QByteArray test_serialised = id2qb(intensities[i]);
-                    std::pair<int, double> test_deserialised = qb2id(test_serialised);
-                    qDebug() << "++++++++++++++++++ SERIALISATION SANITY CHECK: BEFORE" << intensities[i].first << intensities[i].second;
-                    qDebug() << "++++++++++++++++++++++++++++++++++++++++++++++ AFTER " << test_deserialised.first << test_deserialised.second;
+                    qDebug() << "++++++ PUTTING INTENSITY IN DISK CACHE";
+                    QString intensityKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(frameLow).arg(frameHigh).arg(percentiles[i]);
+                    m_diskCache.setEntry(intensityKey.toUtf8(), id2qb(intensities[i]), 0);
                 }
             }
         }
