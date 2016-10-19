@@ -42,8 +42,8 @@ std::pair<int, double> qb2id( const QByteArray & ba) {
         return id;
     }
     const char * cptr = ba.constData();
-    int int_val( * ((const int *) (cptr)))
-    double double_val( * ((const double *) (cptr + sizeof(int))))
+    int int_val( * ((const int *) (cptr)));
+    double double_val( * ((const double *) (cptr + sizeof(int))));
     id = std::make_pair(int_val, double_val);
     return id;
 }
