@@ -433,6 +433,7 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     // also add to disk cache
                     qDebug() << "++++++ PUTTING INTENSITY IN DISK CACHE";
                     QString intensityKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(frameLow).arg(frameHigh).arg(percentiles[i]);
+                    qDebug() << "++++++++++++ WITH DISK CACHE KEY" << intensityKey;
                     m_diskCache.setEntry(intensityKey.toUtf8(), id2qb(intensities[i]), 0);
                 }
             }
@@ -887,7 +888,7 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
         QByteArray clipsVal;
         bool clipsInCache = m_diskCache.readEntry( clipsKey.toUtf8(), clipsVal );
 
-        qDebug() << "++++++++++++ DISK CACHE KEYS" << clipsKey;
+        qDebug() << "++++++++++++ DISK CACHE KEY" << clipsKey;
         qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
 
         if (clipsInCache) {
