@@ -850,28 +850,35 @@ void DataSource::_updateClips( std::shared_ptr<Carta::Lib::NdArray::RawViewInter
         double minClipPercentile, double maxClipPercentile, const std::vector<int>& frames ){
     std::vector<int> mFrames = _fitFramesToImage( frames );
     int quantileIndex = _getQuantileCacheIndex( mFrames );
+    
     std::vector<double> clips = m_quantileCache[ quantileIndex];
-
-    QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
-    QByteArray clipsVal;
-    bool clipsInCache = m_diskCache.readEntry( clipsKey.toUtf8(), clipsVal );
-
-    qDebug() << "++++++++++++ DISK CACHE KEYS" << clipsKey;
-    qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
-
     std::vector<double> newClips;
 
-    if (clipsInCache) {
-        newClips = qb2vd(clipsVal);
-        qDebug() << "++++++++++++ DISK CACHE VALUES:" << newClips;
+    std::tuple<int, int, int> clipsMemKey = {quantileIndex, int(1000 * minClipPercentile), int(1000 * maxClipPercentile)};
+
+    if (m_clipsCache.find(clipsMemKey) != m_clipsCache.end()) {
+        qDebug() << "++++++++++++ FOUND CLIPS IN IN-MEMORY CACHE USING KEY" << clipsMemKey;
+        newClips = m_clipsCache[clipsMemKey];
     } else {
-        Carta::Lib::NdArray::Double doubleView( view.get(), false );
-        qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
-        newClips = Carta::Core::Algorithms::quantiles2pixels(
-                doubleView, {minClipPercentile, maxClipPercentile });
-        qDebug() << "------------- done";
-        qDebug() << "++++++++++++ PUTTING CLIPS IN CACHE";
-        m_diskCache.setEntry( clipsKey.toUtf8(), vd2qb(newClips), 0);
+        QString clipsKey = QString("%1/%2/%3/%4").arg(m_fileName).arg(quantileIndex).arg(minClipPercentile).arg(maxClipPercentile);
+        QByteArray clipsVal;
+        bool clipsInCache = m_diskCache.readEntry( clipsKey.toUtf8(), clipsVal );
+
+        qDebug() << "++++++++++++ DISK CACHE KEYS" << clipsKey;
+        qDebug() << "++++++++++++ DISK CACHE VALUES FOUND:" << clipsInCache;
+
+        if (clipsInCache) {
+            newClips = qb2vd(clipsVal);
+            qDebug() << "++++++++++++ DISK CACHE VALUES:" << newClips;
+        } else {
+            Carta::Lib::NdArray::Double doubleView( view.get(), false );
+            qDebug() << "------------- in DataSource::_updateClips about to call quantiles2pixels";
+            newClips = Carta::Core::Algorithms::quantiles2pixels(
+                    doubleView, {minClipPercentile, maxClipPercentile });
+            qDebug() << "------------- done";
+            qDebug() << "++++++++++++ PUTTING CLIPS IN CACHE";
+            m_diskCache.setEntry( clipsKey.toUtf8(), vd2qb(newClips), 0);
+        }
     }
     
     bool clipsChanged = false;

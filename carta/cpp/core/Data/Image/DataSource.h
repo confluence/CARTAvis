@@ -495,6 +495,9 @@ private:
     /// Temporary hack: disk cache
     DiskCache m_diskCache;
 
+    /// Actual in-memory cache of clips
+    std::map<std::tuple<int, int, int>, std::vector<double> > m_clipsCache;
+
     /// the rendering service
     std::shared_ptr<Carta::Core::ImageRenderService::Service> m_renderService;
 
