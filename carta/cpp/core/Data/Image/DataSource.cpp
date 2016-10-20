@@ -417,16 +417,23 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     if ( locationIndex < 0 ){
                         locationIndex = 0;
                     }
+
+                    qDebug() << "++++++++++++++++++ How does this even work? Location index is" << locationIndex << "; before partial sort the value at index is " << allValues[locationIndex] << "and the index at index is" << allIndices[locationIndex];
+                    
                     qDebug() << "------- Looking for percentile" << percentiles[i] << "(location index" << locationIndex << ")";
                     std::nth_element( allValues.begin(), allValues.begin()+locationIndex, allValues.end() );
                     qDebug() << "------- Finished looking";
+                    qDebug() << "++++++++++++++++++ and after partial sort the value at index is " << allValues[locationIndex] << "and the index at index is" << allIndices[locationIndex];
                     intensities[i].second = allValues[locationIndex];
                     int divisor = 1;
                     std::vector<int> dims = m_image->dims();
+                    qDebug() << "++++++++++++++++++ spectral index is" << spectralIndex;
                     for ( int i = 0; i < spectralIndex; i++ ){
                         divisor = divisor * dims[i];
+                        qDebug() << "++++++++++++++++++ iterating through dims; i is" << i << "; dims[i] is" << dims[i] << "; divisor is" << divisor;
                     }
                     int specIndex = allIndices[locationIndex ]/divisor;
+                    qDebug() << "++++++++++++++++++ specIndex (location) is" << specIndex;
                     intensities[i].first = specIndex;
                     //Store the found intensity in the cache.
                     m_cachedPercentiles.put( frameLow, frameHigh, intensities[i].first, percentiles[i], intensities[i].second );
