@@ -63,7 +63,7 @@ DataSource::DataSource() :
 void DataSource::_copyData( int frameLow, int frameHigh, int spectralIndex,
         std::vector<int>& allIndices, std::vector<double>& allValues ){
     Carta::Lib::NdArray::RawViewInterface* rawData = _getRawData( frameLow, frameHigh, spectralIndex );
-    qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ _copyData called! frameLow:" << frameLow << "frameHigh" << frameHigh;
+    qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ _copyData called! frameLow:" << frameLow << "frameHigh" << frameHigh << "spectral index" << spectralIndex;
     if ( rawData != nullptr ){
         Carta::Lib::NdArray::TypedView<double> view( rawData, false );
 
@@ -75,6 +75,7 @@ void DataSource::_copyData( int frameLow, int frameHigh, int spectralIndex,
         // running out of memory unnecessarily through dynamic allocation
         std::vector<int> dims = rawData->dims();
         int total_size = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int>());
+        qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ Total size of data:" << total_size;
         allIndices.reserve(total_size);
         allValues.reserve(total_size);
 
@@ -86,6 +87,7 @@ void DataSource::_copyData( int frameLow, int frameHigh, int spectralIndex,
             index++;
         }
         );
+        qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ last index used is:" << (index - 1);
     }
     qDebug() << "_+_+_+_+_+_+_+_+_+_+_+_ _copyData completed.";
 
