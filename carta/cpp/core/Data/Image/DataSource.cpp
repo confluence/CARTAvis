@@ -393,6 +393,9 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
 
             // only compare the intensity values; ignore the indices
             auto compareIntensityTuples = [] (const std::pair<int,double>& lhs, const std::pair<int,double>& rhs) { return lhs.second < rhs.second; };
+
+            // reverse comparison for finding high values
+            auto reverseComparison = [] (const std::pair<int,double>& lhs, const std::pair<int,double>& rhs) { return rhs.second < lhs.second; };
             
             std::clock_t search_begin = std::clock();
             for ( int i = 0; i < percentileCount; i++ ){
@@ -402,7 +405,13 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     if ( locationIndex < 0 ){
                         locationIndex = 0;
                     }
-                    std::nth_element( allValues.begin(), allValues.begin()+locationIndex, allValues.end(), compareIntensityTuples );
+
+                    if (locationIndex > allValues.size()/2) {
+                        locationIndex = allValues.size() - locationIndex - 1;
+                        std::nth_element( allValues.begin(), allValues.begin()+locationIndex, allValues.end(), reverseComparison );
+                    } else {
+                        std::nth_element( allValues.begin(), allValues.begin()+locationIndex, allValues.end(), compareIntensityTuples );
+                    }
                     
                     intensities[i].second = allValues[locationIndex].second;
                     intensities[i].first = allValues[locationIndex].first / divisor;
