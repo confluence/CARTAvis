@@ -412,7 +412,7 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                 }
             }
             std::clock_t search_end = std::clock();
-            qDebug() << "+++++++++++++++++++++++++++++ search took" << (search_end - search_begin)/total_size << "(per element)" 
+            qDebug() << "+++++++++++++++++++++++++++++ search took" << (search_end - search_begin)/total_size << "(per element)";
         }
     }
     return intensities;
