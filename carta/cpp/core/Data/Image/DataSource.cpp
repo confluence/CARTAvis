@@ -13,6 +13,7 @@
 #include "../../Algorithms/quantileAlgorithms.h"
 #include <QDebug>
 #include <sys/time.h>
+#include <ctime>
 
 using Carta::Lib::AxisInfo;
 using Carta::Lib::AxisDisplayInfo;
@@ -392,7 +393,8 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
 
             // only compare the intensity values; ignore the indices
             auto compareIntensityTuples = [] (const std::pair<int,double>& lhs, const std::pair<int,double>& rhs) { return lhs.second < rhs.second; };
-
+            
+            std::clock_t search_begin = std::clock();
             for ( int i = 0; i < percentileCount; i++ ){
                 //Missing intensity
                 if ( intensities[i].first < 0 ){
@@ -405,9 +407,12 @@ std::vector<std::pair<int,double> > DataSource::_getIntensityCache( int frameLow
                     intensities[i].second = allValues[locationIndex].second;
                     intensities[i].first = allValues[locationIndex].first / divisor;
                     
+                    qDebug() << "-------------------------- caching quantile:" << frameLow << frameHigh << intensities[i].first << percentiles[i] << intensities[i].second;
                     m_cachedPercentiles.put( frameLow, frameHigh, intensities[i].first, percentiles[i], intensities[i].second );
                 }
             }
+            std::clock_t search_end = std::clock();
+            qDebug() << "+++++++++++++++++++++++++++++ search took" << (search_end - search_begin)/total_size << "(per element)" 
         }
     }
     return intensities;
